@@ -52,6 +52,7 @@ class SubTask implements Comparable{
         if(estimate!=null){
             return ((String)estimate/60/60).padLeft(2, ' ')
         } else {
+            return "??"
         }
     }
 
