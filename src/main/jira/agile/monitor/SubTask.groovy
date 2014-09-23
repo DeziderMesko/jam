@@ -9,7 +9,7 @@ class SubTask implements Comparable{
     private static final String DONE = "Done"
     private static final String IN_PROGRESS = "In Progress"
 
-    def id, name, status, description, raw
+    def id, name, status, description, raw, estimate=0
 
     def String getAbbreivation(){
         if (status.equals(TO_DO)) return "..."
@@ -35,7 +35,7 @@ class SubTask implements Comparable{
         return ansi().bold().fg(color).a(status.padRight(11, ' ')).reset();
     }
 
-    public int compareTo(Object o) {
+    def int compareTo(Object o) {
         def st = ((SubTask) o).status
 
         if(this.status.equals(st)) return 0
@@ -48,7 +48,14 @@ class SubTask implements Comparable{
         return 0
     }
 
-    public String toString(){
-        return "Assignee: ${getAbbreivation()}  Status: ${getColorStatus()}  ${id}: ${description}"
+    def String getEstimateInHours(){
+        if(estimate!=null){
+            return ((String)estimate/60/60).padLeft(2, ' ')
+        } else {
+        }
+    }
+
+    def String toString(){
+        return "${getColorStatus()} ${getAbbreivation()} ${getEstimateInHours()}h ${id}: ${description}"
     }
 }

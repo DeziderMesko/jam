@@ -50,6 +50,9 @@ class JAM {
 
     def go(taskId, authString) {
         def jira = new RESTClient(JIRA_API_URL);
+
+        jira.handler.failure = { resp -> println "Unexpected failure: ${resp.statusLine}"; System.exit(1) }
+
         setupAuthorization(jira, authString)
 
         def rawSubTasks = jira.get(path: 'search', query: ["jql":"parent=${taskId}"])
@@ -57,7 +60,7 @@ class JAM {
         def subTasksList = []
 
         rawSubTasks.getData().issues.each{ it ->
-            def st = new SubTask(raw:it, description:it.fields.summary, name:it.fields.assignee.name, status:it.fields.status.name, id:it.key)
+            def st = new SubTask(raw:it, description:it.fields.summary, name:it.fields.assignee.name, status:it.fields.status.name, id:it.key, estimate:it.fields.timeoriginalestimate)
             subTasksList.add(st)
         }
         if(subTasksList.isEmpty()) return
