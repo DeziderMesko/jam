@@ -6,6 +6,8 @@ import static groovyx.net.http.Method.*
 import static org.fusesource.jansi.Ansi.*
 import groovyx.net.http.*
 
+import java.text.SimpleDateFormat
+
 import org.apache.http.HttpRequest
 import org.apache.http.HttpRequestInterceptor
 import org.apache.http.protocol.HttpContext
@@ -27,36 +29,36 @@ class JAM {
     public static void main(String[] args) {
         def jam = new JAM()
 
-        def tasks = getArgument(args, "-t", "Stories are required parameter in format: XXX-nnn,XXX-mmm,XXX-ooo...")
-        if (tasks == null) {
-            println "Usage: jam <-t task> [-u] [-p]\n"+
-                    "-t tasks i.e. -t DDT-523,DDT-234,PCI-3242\n-u username\n-p password"
+        def stories = getArgument(args, "-s", "Stories are required parameter in format: XXX-nnn,XXX-mmm,XXX-ooo...")
+        if (stories == null) {
+            println "Usage: jam <-s story> [-u] [-p]\n"+
+                    "-s stories i.e. -s DDT-523,DDT-234,PCI-3242\n-u username\n-p password"
             System.exit(1)
         }
 
-        tasks = tasks.split(',');
+        stories = stories.split(',');
 
-        def authString = getAuthString(args)
+        def String authString = getAuthString(args)
+        def jira = new RESTClient(JIRA_API_URL);
+        jira.handler.failure = { resp -> println "Unexpected failure: ${resp.statusLine}"; System.exit(1) }
+        setupAuthorization(jira, authString)
+
 
         System.setProperty("jansi.passthrough", "true");
         AnsiConsole.systemInstall();
 
-        tasks.each {
-            jam.go(it, authString)
+        def sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm")
+        println "Status at " + sdf.format(new Date())
+
+        stories.each {
+            def rawSubTasks = jira.get(path: 'search', query: ["jql":"parent=${it}"])
+            jam.processSubtasks(rawSubTasks)
         }
 
         AnsiConsole.systemUninstall();
     }
 
-    def go(taskId, authString) {
-        def jira = new RESTClient(JIRA_API_URL);
-
-        jira.handler.failure = { resp -> println "Unexpected failure: ${resp.statusLine}"; System.exit(1) }
-
-        setupAuthorization(jira, authString)
-
-        def rawSubTasks = jira.get(path: 'search', query: ["jql":"parent=${taskId}"])
-
+    def processSubtasks(rawSubTasks) {
         def subTasksList = []
 
         rawSubTasks.getData().issues.each{ it ->
@@ -72,7 +74,7 @@ class JAM {
         println ""
     }
 
-    def setupAuthorization(RESTClient jira, String authString) {
+    def static setupAuthorization(RESTClient jira, String authString) {
         jira.ignoreSSLIssues()
 
         jira.client.addRequestInterceptor(
@@ -114,10 +116,5 @@ class JAM {
             return args[uIndex];
         }
         return null
-    }
-
-    def getInfo(RESTClient jira){
-        def serverInfo = jira.get(path: 'serverInfo')
-        println serverInfo.getData()
     }
 }
