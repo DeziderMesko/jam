@@ -13,6 +13,5 @@ hs_err_pid*
 
 .classpath
 .settings/
-src/main/jira/agile/monitor/Labels.groovy
 src/main/jira/agile/monitor/bah.js
 target/

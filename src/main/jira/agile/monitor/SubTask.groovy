@@ -9,7 +9,7 @@ class SubTask implements Comparable{
     private static final String DONE = "Done"
     private static final String IN_PROGRESS = "In Progress"
 
-    def id, name, status, description, raw, estimate=0
+    def id, name, status, description, raw, estimate=0, labels
 
     def String getAbbreivation(){
         if (status.equals(TO_DO)) return "..."
@@ -54,6 +54,10 @@ class SubTask implements Comparable{
         } else {
             return "??"
         }
+    }
+
+    def getLabels(){
+        raw.fields.labels
     }
 
     def String toString(){
