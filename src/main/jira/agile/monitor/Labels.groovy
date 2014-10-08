@@ -1,3 +1,4 @@
+
 package jira.agile.monitor
 
 
@@ -17,9 +18,10 @@ import org.apache.http.protocol.HttpContext
  * @author dezider.mesko
  *
  */
+//@Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7.2' )
 class Labels {
 
-    def static JIRA_REST_URL = "https://jira-dev.intgdc.com/rest"
+    def static JIRA_REST_URL = "https://jira.intgdc.com/rest"
     def static JIRA_API_URL = JIRA_REST_URL + "/api/latest/"
 
     public static void main(String[] args) {
@@ -29,8 +31,8 @@ class Labels {
         def labels = getArgument(args, "-l", "Labels are required parameter in format: label1,label2...")
         if (stories == null || labels == null) {
             println "Usage: jam <-s story> <-l labels> [-u] [-p]\n"+
-                    "-s stories i.e. -s DDT-523,DDT-234,PCI-3242\n-u username\n-p password"+
-                    "-l labels i.e. -l label1,label2"+
+                    "-s stories i.e. -s DDT-523,DDT-234,PCI-3242\n-u username\n-p password\n"+
+                    "-l labels i.e. -l label1,label2\n"+
                     "--skipSubtasks"
             System.exit(1)
         }

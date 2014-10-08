@@ -3,37 +3,7 @@ package jira.agile.monitor
 import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
-class SubTask implements Comparable{
-
-    private static final String TO_DO = "To Do"
-    private static final String DONE = "Done"
-    private static final String IN_PROGRESS = "In Progress"
-
-    def id, name, status, description, raw, estimate=0, labels
-
-    def String getAbbreivation(){
-        if (status.equals(TO_DO)) return "..."
-        if (name.startsWith("michal.mar")) return "OMG"
-
-        def names = name.split("\\.")
-        return (names[0].substring(0,1)+names[1].substring(0,2)).toUpperCase()
-    }
-
-    def String getColorStatus(){
-        def color = BLACK
-        switch(status.trim()){
-            case TO_DO:
-                color = RED
-                break;
-            case DONE:
-                color = GREEN
-                break;
-            case IN_PROGRESS:
-                color = YELLOW
-                break;
-        }
-        return ansi().bold().fg(color).a(status.padRight(11, ' ')).reset();
-    }
+class SubTask extends Task implements Comparable{
 
     def int compareTo(Object o) {
         def st = ((SubTask) o).status
@@ -54,10 +24,6 @@ class SubTask implements Comparable{
         } else {
             return "??"
         }
-    }
-
-    def getLabels(){
-        raw.fields.labels
     }
 
     def String toString(){

@@ -51,27 +51,30 @@ class JAM {
         println "Status at " + sdf.format(new Date())
 
         stories.each {
-            def rawSubTasks = jira.get(path: 'search', query: ["jql":"parent=${it}"])
-            jam.processSubtasks(rawSubTasks)
+            def story = jira.get(path: "issue/${it}", requestContentType: JSON).getData()
+            def rawSubTasks = jira.get(path: 'search', query: ["jql":"parent=${it}"]).getData()
+            jam.processSubtasks(rawSubTasks, story)
         }
 
         AnsiConsole.systemUninstall();
     }
 
-    def processSubtasks(rawSubTasks) {
+    def processSubtasks(rawSubTasks, story) {
         def subTasksList = []
+        def stry = new Story(raw:story, id:story.key, status:story.fields.status.name, description:story.fields.summary, user:story.fields.assignee.name)
 
-        rawSubTasks.getData().issues.each{ it ->
-            def st = new SubTask(raw:it, description:it.fields.summary, name:it.fields.assignee.name, status:it.fields.status.name, id:it.key, estimate:it.fields.timeoriginalestimate)
+        rawSubTasks.issues.each{ it ->
+            def st = new SubTask(raw:it, description:it.fields.summary, user:it.fields.assignee.name, status:it.fields.status.name, id:it.key, estimate:it.fields.timeoriginalestimate)
             subTasksList.add(st)
         }
-        if(subTasksList.isEmpty()) return
 
-            println subTasksList.first().raw.fields.parent.key+": "+subTasksList.first().raw.fields.parent.fields.summary
-
-        Collections.sort(subTasksList)
-        subTasksList.each { println it }
-        println ""
+        if(subTasksList.isEmpty()) {
+            println stry
+        } else {
+            println "\n"+story.key+": "+story.fields.summary
+            Collections.sort(subTasksList)
+            subTasksList.each { println it }
+        }
     }
 
     def static setupAuthorization(RESTClient jira, String authString) {
