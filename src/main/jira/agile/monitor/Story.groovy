@@ -13,6 +13,9 @@ class Story extends Task {
         if(status.equals("Completed") || status.equals("Verification")){
             status = "Done"
         }
+        if(status.equals("Icebox")){
+            status = "To Do"
+        }
         return super.getColorStatus()
     }
 }

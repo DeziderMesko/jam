@@ -13,7 +13,6 @@ import org.apache.http.protocol.HttpContext
 
 
 /**
- * java -jar jam-0.0.1-SNAPSHOT-jar-with-dependencies.jar -s DDT-525,DDT-493,DDT-495,DDT-697,DDT-686,DDT-683 -u dezider.mesko
  * mvn clean compile assembly:single
  * @author dezider.mesko
  *
@@ -30,7 +29,7 @@ class Labels {
         def stories = getArgument(args, "-s", "Stories are required parameter in format: XXX-nnn,XXX-mmm,XXX-ooo...")
         def labels = getArgument(args, "-l", "Labels are required parameter in format: label1,label2...")
         if (stories == null || labels == null) {
-            println "Usage: jam <-s story> <-l labels> [-u] [-p]\n"+
+            println "Usage: Labels.groovy <-s story> <-l labels> [-u] [-p]\n"+
                     "-s stories i.e. -s DDT-523,DDT-234,PCI-3242\n-u username\n-p password\n"+
                     "-l labels i.e. -l label1,label2\n"+
                     "--skipSubtasks"
