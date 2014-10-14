@@ -52,7 +52,7 @@ class JAM {
 
         stories.each {
             def story = jira.get(path: "issue/${it}", requestContentType: JSON).getData()
-            def rawSubTasks = jira.get(path: 'search', query: ["jql":"parent=${it}"]).getData()
+            def rawSubTasks = jira.get(path: 'search', query: ["jql":"parent=${it}", "expand":"changelog"]).getData()
             jam.processSubtasks(rawSubTasks, story)
         }
 
