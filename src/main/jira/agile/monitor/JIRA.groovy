@@ -27,6 +27,7 @@ class JAM {
     def static JIRA_AGILE = JIRA_REST_URL + "/greenhopper/1.0/"
 
     public static void main(String[] args) {
+
         def jam = new JAM()
 
         def stories = getArgument(args, "-s", "Stories are required parameter in format: XXX-nnn,XXX-mmm,XXX-ooo...")
@@ -89,25 +90,7 @@ class JAM {
                 })
     }
 
-    private static String getAuthString(String[] args) {
-        def user = null
-        def pw = null
 
-        user = getArgument(args, "-u", "Username parameter missing")
-        pw = getArgument(args, "-p", "Password parameter missing")
-
-        if(user == null){
-            user = System.console().readLine("Your JIRA username: ")
-        } else {
-            println "Using username: "+user
-        }
-        if(pw == null){
-            pw = System.console().readPassword("Your JIRA password: ");
-        }
-
-        def authString = "${user}:${pw}".getBytes().encodeBase64().toString()
-        return authString
-    }
 
     private static getArgument(args, String option, String errorMessage){
         def uIndex = args.findIndexOf { it.equals(option) } + 1

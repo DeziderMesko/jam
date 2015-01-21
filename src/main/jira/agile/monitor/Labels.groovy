@@ -11,8 +11,8 @@ import org.apache.http.HttpRequest
 import org.apache.http.HttpRequestInterceptor
 import org.apache.http.protocol.HttpContext
 
-
-/**
+/*
+ * java -cp target/jam-0.0.1-SNAPSHOT-jar-with-dependencies.jar jira.agile.monitor.Labels -s DDT-797,DDT-1003,DDT-1087,PCI-4248,PCI-3249,SEC-634,SEC-676,SEC-693 -l tr/operations,scrum7 -u dezider.mesko
  * mvn clean compile assembly:single
  * @author dezider.mesko
  *
@@ -27,14 +27,23 @@ class Labels {
 
     public static void main(String[] args) {
         def jam = new Labels()
+        def showLabelsOnly = false;
 
         def stories = getArgument(args, "-s", "Stories are required parameter in format: XXX-nnn,XXX-mmm,XXX-ooo...")
-        def labels = getArgument(args, "-l", "Labels are required parameter in format: label1,label2...")
+        def labels
+        if(args.contains("--showLabelsOnly")){
+            showLabelsOnly = true;
+            println "Only showing current labels for given stories"
+            labels = ""
+        } else {
+            labels = getArgument(args, "-l", "Labels are required parameter in format: label1,label2...")
+        }
         if (stories == null || labels == null) {
             println "Usage: Labels.groovy <-s story> <-l labels> [-u] [-p]\n"+
                     "-s stories i.e. -s DDT-523,DDT-234,PCI-3242\n-u username\n-p password\n"+
                     "-l labels i.e. -l label1,label2\n"+
-                    "--skipSubtasks"
+                    "--skipSubtasks\n"+
+                    "--showLabelsOnly just show current labels and do nothing"
             System.exit(1)
         }
 
@@ -48,6 +57,8 @@ class Labels {
             println "Subtask won't be labeled"
         }
 
+
+
         def String authString = getAuthString(args)
         def jira = new RESTClient(JIRA_API_URL);
         jira.handler.failure = { resp ->
@@ -55,22 +66,30 @@ class Labels {
         }
         setupAuthorization(jira, authString)
 
-        jam.labelStories(stories, labels, bothStoriesAndSubtasks,jira)
+        jam.labelStories(stories, labels, bothStoriesAndSubtasks, jira, showLabelsOnly)
     }
 
-    def labelStories(stories, labels, subtasks, jira){
+    def labelStories(stories, labels, subtasks, jira, showLabelsOnly){
         stories.each {
             def story = jira.get(path: "issue/${it}", requestContentType: JSON).getData()
             def storyLabels = (story.fields.labels + labels).unique()
-            println "Adding labels: ${labels} to ${story.key}. Expected result: ${storyLabels}"
-            jira.put(path: "issue/${story.key}", body:[fields:["labels":storyLabels]], requestContentType: JSON)
+            if(showLabelsOnly){
+                println "${story.key}: ${storyLabels}"
+            } else {
+                println "Adding labels: ${labels} to ${story.key}. Expected result: ${storyLabels}"
+                jira.put(path: "issue/${story.key}", body:[fields:["labels":storyLabels]], requestContentType: JSON)
+            }
 
             if(subtasks){
                 def rawSubTasks = jira.get(path: 'search', query: ["jql":"parent=${it}"], requestContentType: JSON)
                 rawSubTasks.getData().issues.each{ it2 ->
                     def subtaskLabels = (it2.fields.labels + labels).unique();
-                    println "\tAdding labels: ${labels} to sub-task ${it2.key} as well. Expected result: ${subtaskLabels}"
-                    jira.put(path: "issue/${it2.key}", body:[fields:["labels":subtaskLabels]], requestContentType: JSON)
+                    if(showLabelsOnly){
+                        println "\t${it2.key}: ${subtaskLabels}"
+                    } else {
+                        println "\tAdding labels: ${labels} to sub-task ${it2.key} as well. Expected result: ${subtaskLabels}"
+                        jira.put(path: "issue/${it2.key}", body:[fields:["labels":subtaskLabels]], requestContentType: JSON)
+                    }
                 }
             }
         }

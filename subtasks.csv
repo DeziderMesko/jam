@@ -1,0 +1,42 @@
+issuetype,parent,summary,assignee,description,originalestimate,labels,labels,labels
+sub-task,DDT-1498,Investigate rsyslog integration,milan.koudelka,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-1498,Set Splunk forwarder configuration,milan.koudelka,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-1498,Demo,milan.koudelka,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-1497,Setup backup,martin.ducar,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-1497,Retention implementation,martin.ducar,+ test,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-1497,Test of restore procedure,martin.ducar,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-1497,Demo,martin.ducar,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-1497,Documentation,martin.ducar,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-1497,Alerting,martin.ducar,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-839,Documentation,michal.marciniszyn,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-839,Test of restore procedure,michal.marciniszyn,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-839,Setup of test environment,michal.marciniszyn, + puppet changes (deployment of test environment),57600,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-839,Demo,michal.marciniszyn,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-853,Documentation,jan.orel,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-853,Test of restore procedure,jan.orel,,57600,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-853,Setup of test environment,jan.orel,Test env is used from SEC-839,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-853,Demo,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-286,Create smoke check test,radek.chromy,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-286,Documentation,radek.chromy,Icinga docs,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-286,Test scenario,radek.chromy,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,DDT-286,Demo,radek.chromy,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-936,Script run,stepan.cenek,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-936,Script fix,stepan.cenek,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-936,Demo,stepan.cenek,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Notify production changes,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,"Create host Freeipa records, add them to usergroups, announce changes.",jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Commit changes to puppet - modify hierasetup,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Add OTP to hosts userdata.,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Run puppet – changes are actually done.,jan.orel,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Update c3 either in stage update or manually.,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Test case - smoker,jan.orel,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,"Test case - UI tests, checklist",jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Splunk functionality verification,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Documentation,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Demo,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Prepare training for RC & subclasters owners,jan.orel,,28800,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Check external scripts using different domain,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,Check splunk queries if using different domain,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,How it affects monitoring,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,How it affects Munin,jan.orel,,14400,infrastructure-backlog,scrum7,tr/operations
+sub-task,SEC-457,INT.GDC vs PROD.GDC,jan.orel,Which machines should be moved,28800,infrastructure-backlog,scrum7,tr/operations

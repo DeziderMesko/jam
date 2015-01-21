@@ -1,0 +1,2 @@
+issuetype,parent,summary,assignee,description,originalestimate,labels
+sub-task,DDT-495,Investigate rsyslog integration - hours III,milan.koudelka,,8h,infrastructure-backlog:scrum7:tr/operations

@@ -87,5 +87,10 @@
       <artifactId>joda-time</artifactId>
       <version>2.5</version>
     </dependency>
+    <dependency>
+      <groupId>com.xlson.groovycsv</groupId>
+      <artifactId>groovycsv</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
 </project>
