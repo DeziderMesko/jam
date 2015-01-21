@@ -21,7 +21,7 @@ import org.apache.http.protocol.HttpContext
  */
 class AddSubtasks {
 
-    def static JIRA_REST_URL = "https://jira-dev.intgdc.com/rest"
+    def static JIRA_REST_URL = "https://jira.intgdc.com/rest"
     def static JIRA_API_URL = JIRA_REST_URL + "/api/latest/"
 
     public static void main(String[] args) {
@@ -30,17 +30,23 @@ class AddSubtasks {
 
         def String authString = getAuthString(args)
         def jira = new RESTClient(JIRA_API_URL);
-        jira.handler.failure = { resp -> println "Unexpected failure: ${resp.statusLine}"; System.exit(1) }
+        jira.handler.failure = { resp ->
+            println "Unexpected failure: ${resp.statusLine}\n ${resp.data}"; System.exit(1)
+        }
+        jira.handler.success = {   resp, reader ->
+            println "Response: ${resp.statusLine}\n ${resp.data}"
+            System.out << reader
+        }
         setupAuthorization(jira, authString)
 
-        def data = parseCsv(new FileReader(new File("subtask.csv")))
-
+        def data = parseCsv(new FileReader(new File("subtask15.csv")))
+        def bulk = []
         data.each { subtask ->
             def st
             println "${subtask.parent} ${subtask.summary} "
             st = [fields:[
-                    timetracking:["originalEstimate":subtask.originalestimate],
-                    "project":["key":"DDT"],
+                    timetracking:["originalEstimate":subtask.estimate],
+                    "project":["key":subtask.parent.substring(0, subtask.parent.indexOf("-"))],
                     "issuetype":["id":5],
                     "parent":["key":subtask.parent],
                     "description":subtask.description,
@@ -48,11 +54,11 @@ class AddSubtasks {
                     "assignee": ["name":subtask.assignee],
                     "labels":subtask.labels.split(":")]
             ]
-            println st
-            println ""
-            println new JsonBuilder( st ).toPrettyString()
-            jira.post(path: "issue", body:st, requestContentType: JSON)
+            bulk.add(st)
         }
+        def bulkWrap = ["issueUpdates":bulk]
+        println new JsonBuilder( bulkWrap ).toPrettyString()
+        //jira.post(path: "issue/bulk", body:bulkWrap, requestContentType: JSON)
     }
 
     private static String getAuthString(String[] args) {

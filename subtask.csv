@@ -1,2 +1,3 @@
 issuetype,parent,summary,assignee,description,originalestimate,labels
-sub-task,DDT-495,Investigate rsyslog integration - hours III,milan.koudelka,,8h,infrastructure-backlog:scrum7:tr/operations
+sub-task,DDT-495,Investigate rsyslog integration - hours aaa,milan.koudelka,xx,8h,infrastructure-backlog:scrum7:tr/operations
+sub-task,DDT-495,Investigate rsyslog integration - hours bbb,milan.koudelka,xxx,8h,infrastructure-backlog:scrum7:tr/operations
