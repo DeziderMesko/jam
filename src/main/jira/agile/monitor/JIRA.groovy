@@ -26,6 +26,9 @@ class JAM {
     def static JIRA_API_URL = JIRA_REST_URL + "/api/latest/"
     def static JIRA_AGILE = JIRA_REST_URL + "/greenhopper/1.0/"
 
+    def static int totalDone = 0
+    def static int totalTotal = 0
+
     public static void main(String[] args) {
 
         def jam = new JAM()
@@ -56,8 +59,13 @@ class JAM {
             def rawSubTasks = jira.get(path: 'search', query: ["jql":"parent=${it}", "expand":"changelog"]).getData()
             jam.processSubtasks(rawSubTasks, story)
         }
+        println "In sprint done: ${totalDone}h of ${totalTotal}h (${toPercentage(totalDone,totalTotal)}%)"
 
         AnsiConsole.systemUninstall();
+    }
+
+    def static String toPercentage(part, total){
+        return (Integer)(part*100/total)
     }
 
     def processSubtasks(rawSubTasks, story) {
@@ -74,7 +82,19 @@ class JAM {
         } else {
             println "\n"+story.key+": "+story.fields.summary
             Collections.sort(subTasksList)
-            subTasksList.each { println it }
+            def total = 0
+            def done = 0
+            subTasksList.each {
+                println it
+                if(it.status.equals(SubTask.DONE)){
+
+                    done += it.estimate==null?0:it.estimate/3600
+                }
+                total += it.estimate==null?0:it.estimate/3600
+            }
+            totalTotal += total
+            totalDone += done
+            println "Done ${done}h of $total (${toPercentage(done,total)}%)"
         }
     }
 
@@ -90,7 +110,25 @@ class JAM {
                 })
     }
 
+    private static String getAuthString(String[] args) {
+        def user = null
+        def pw = null
 
+        user = getArgument(args, "-u", "Username parameter missing")
+        pw = getArgument(args, "-p", "Password parameter missing")
+
+        if(user == null){
+            user = System.console().readLine("Your JIRA username: ")
+        } else {
+            println "Using username: "+user
+        }
+        if(pw == null){
+            pw = System.console().readPassword("Your JIRA password: ");
+        }
+
+        def authString = "${user}:${pw}".getBytes().encodeBase64().toString()
+        return authString
+    }
 
     private static getArgument(args, String option, String errorMessage){
         def uIndex = args.findIndexOf { it.equals(option) } + 1

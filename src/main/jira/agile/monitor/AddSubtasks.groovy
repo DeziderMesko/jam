@@ -14,7 +14,7 @@ import org.apache.http.protocol.HttpContext
 
 
 /**
- * java -jar jam-0.0.1-SNAPSHOT-jar-with-dependencies.jar -t DDT-525,DDT-493,DDT-495,DDT-697,DDT-686,DDT-683 -u dezider.mesko
+ * java -jar jam-0.0.1-SNAPSHOT-jar-with-dependencies.jar -f subtasks.csv -u dezider.mesko
  * mvn clean compile assembly:single
  * @author dezider.mesko
  *
@@ -24,7 +24,19 @@ class AddSubtasks {
     def static JIRA_REST_URL = "https://jira.intgdc.com/rest"
     def static JIRA_API_URL = JIRA_REST_URL + "/api/latest/"
 
+    def static int SUBTASK = 5;
+
     public static void main(String[] args) {
+
+        def cli = new CliBuilder(usage: "AddSubtasks -f <file> -[up]")
+        cli.f('csv file with subtasks', args:1, required:true)
+        cli.u('optional username', args:1)
+        cli.p('optional password', args:1)
+        def options = cli.parse(args)
+        if(!options){
+            //            print cli.usage()
+            System.exit(1);
+        }
 
         def jam = new AddSubtasks()
 
@@ -39,15 +51,14 @@ class AddSubtasks {
         }
         setupAuthorization(jira, authString)
 
-        def data = parseCsv(new FileReader(new File("subtask15.csv")))
+        def data = parseCsv(new FileReader(new File(options.f)))
         def bulk = []
         data.each { subtask ->
-            def st
             println "${subtask.parent} ${subtask.summary} "
-            st = [fields:[
+            def st = [fields:[
                     timetracking:["originalEstimate":subtask.estimate],
                     "project":["key":subtask.parent.substring(0, subtask.parent.indexOf("-"))],
-                    "issuetype":["id":5],
+                    "issuetype":["id":SUBTASK],
                     "parent":["key":subtask.parent],
                     "description":subtask.description,
                     "summary": subtask.summary,
