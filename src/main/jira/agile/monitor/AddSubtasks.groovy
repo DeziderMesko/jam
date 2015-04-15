@@ -69,7 +69,8 @@ class AddSubtasks {
         }
         def bulkWrap = ["issueUpdates":bulk]
         println new JsonBuilder( bulkWrap ).toPrettyString()
-        //jira.post(path: "issue/bulk", body:bulkWrap, requestContentType: JSON)
+        System.console().readLine("\nSubtasks listed, will be loaded to JIRA, this operation is not idempotent. Press Enter to continue or Ctrl+C to abort")
+        jira.post(path: "issue/bulk", body:bulkWrap, requestContentType: JSON)
     }
 
     private static String getAuthString(String[] args) {
