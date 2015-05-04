@@ -65,6 +65,7 @@ class JAM {
     }
 
     def static String toPercentage(part, total){
+        if(total==0) return 0
         return (Integer)(part*100/total)
     }
 
