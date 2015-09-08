@@ -33,6 +33,7 @@ Usage: Labels.groovy <-s story> <-l labels> [-u] [-p]
 -l labels i.e. -l label1,label2
 --skipSubtasks
 --showLabelsOnly just show current labels and do nothing
+--subtract remove given labels
 ```
 
 
