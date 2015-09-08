@@ -45,7 +45,7 @@ class Labels {
                     "-l labels i.e. -l label1,label2\n"+
                     "--skipSubtasks\n"+
                     "--showLabelsOnly just show current labels and do nothing"+
-                    "--subtract removes given labels"
+                    "--subtract remove given labels"
             System.exit(1)
         }
 
