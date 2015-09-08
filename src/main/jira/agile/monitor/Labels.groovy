@@ -28,6 +28,7 @@ class Labels {
     public static void main(String[] args) {
         def jam = new Labels()
         def showLabelsOnly = false;
+        def subtract = false;
 
         def stories = getArgument(args, "-s", "Stories are required parameter in format: XXX-nnn,XXX-mmm,XXX-ooo...")
         def labels
@@ -43,7 +44,8 @@ class Labels {
                     "-s stories i.e. -s DDT-523,DDT-234,PCI-3242\n-u username\n-p password\n"+
                     "-l labels i.e. -l label1,label2\n"+
                     "--skipSubtasks\n"+
-                    "--showLabelsOnly just show current labels and do nothing"
+                    "--showLabelsOnly just show current labels and do nothing"+
+                    "--subtract removes given labels"
             System.exit(1)
         }
 
@@ -57,7 +59,10 @@ class Labels {
             println "Subtask won't be labeled"
         }
 
-
+        if(args.contains("--subtract")){
+            subtract = true;
+            println "Labels will be subtracted"
+        }
 
         def String authString = getAuthString(args)
         def jira = new RESTClient(JIRA_API_URL);
@@ -66,17 +71,22 @@ class Labels {
         }
         setupAuthorization(jira, authString)
 
-        jam.labelStories(stories, labels, bothStoriesAndSubtasks, jira, showLabelsOnly)
+        jam.labelStories(stories, labels, bothStoriesAndSubtasks, jira, showLabelsOnly, subtract)
     }
 
-    def labelStories(stories, labels, subtasks, jira, showLabelsOnly){
+    def labelStories(stories, labels, subtasks, jira, showLabelsOnly, subtract){
         stories.each {
             def story = jira.get(path: "issue/${it}", requestContentType: JSON).getData()
-            def storyLabels = (story.fields.labels + labels).unique()
+            def storyLabels
+            if (subtract){
+                storyLabels = (story.fields.labels - labels)
+            } else {
+                storyLabels = (story.fields.labels + labels).unique()
+            }
             if(showLabelsOnly){
                 println "${story.key}: ${storyLabels}"
             } else {
-                println "Adding labels: ${labels} to ${story.key}. Expected result: ${storyLabels}"
+                println "Adding/removing labels: ${labels} to/from ${story.key}. Expected result: ${storyLabels}"
                 jira.put(path: "issue/${story.key}", body:[fields:["labels":storyLabels]], requestContentType: JSON)
             }
 
@@ -87,7 +97,7 @@ class Labels {
                     if(showLabelsOnly){
                         println "\t${it2.key}: ${subtaskLabels}"
                     } else {
-                        println "\tAdding labels: ${labels} to sub-task ${it2.key} as well. Expected result: ${subtaskLabels}"
+                        println "\tAdding/removing labels: ${labels} to/from sub-task ${it2.key} as well. Expected result: ${subtaskLabels}"
                         jira.put(path: "issue/${it2.key}", body:[fields:["labels":subtaskLabels]], requestContentType: JSON)
                     }
                 }
